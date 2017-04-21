@@ -145,6 +145,8 @@ function love.keypressed(key, unicode)
     	controls.pressedButton(controls.buttonOneX + 10, controls.buttonOneY + 10)
     elseif key == "right" then
     	controls.pressedButton(controls.buttonTwoX + 10, controls.buttonTwoY + 10)
+    elseif key == "up" then
+    	controls.pressedButton(controls.startButtonX + 10, controls.startButtonY + 10)
     end
 end
 
