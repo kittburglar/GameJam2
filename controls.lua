@@ -4,8 +4,8 @@ require "state"
 controls = {}
 
 padding = 40
-buttonSize = 80
-maxProgress = 100
+buttonSize = 150
+maxProgress = 50
 
 sound = love.audio.newSource("click.wav", "static")
 
@@ -49,26 +49,27 @@ function controls.reset()
 end
 
 function controls.pressedButton(x, y)
+	print("pressed button")
 	if state.currentState == "endingState" and 
 	(helper.isPointInRect(x, y, controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)) then
-	
+		print("State 1")
 		state.currentState = "firstReadyState"
 		controls.load()
 	elseif state.currentState == "firstEndingState" and
 		(helper.isPointInRect(x, y, controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)) then
+		print("State 2")
 		state.currentState = "secondReadyState"
 		controls.playerProgress = 0
 		controls.lastButtonPressed = 0 
 	elseif (helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
 		helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
 		state.currentState == "firstReadyState" then
-		print("State 1")
+		print("State 3")
 	    timer.start()
 	    state.currentState = "firstRunState"
-	
 	-- Ending Run
 	elseif state.currentState == "firstRunState" and controls.playerProgress >= maxProgress then
-		print("State 2")
+		print("State 4")
 	    controls.playerOneBestTime = timer.timeElapsed
 	    print("Player one best time: " .. controls.playerOneBestTime .. " in " .. timer.timeElapsed .. " seconds." )
 	    timer.startTime = nil
@@ -79,22 +80,22 @@ function controls.pressedButton(x, y)
 	-- Running
 	elseif state.currentState == "firstRunState" and helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
+		print("State 5")
 		controls.lastButtonPressed = 1
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "firstRunState"
 		sound:stop()
 		sound:setPitch(0.7)
 		sound:play()
-		print("State 3")
 	elseif state.currentState == "firstRunState" and helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
+		print("State 1")
 		controls.lastButtonPressed = 2
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "firstRunState"
 		sound:stop()
 		sound:setPitch(0.5)
 		sound:play()
-		print("State 4")
 	--Will refactor later lol (second player)
 
 	-- Begin run
@@ -106,6 +107,7 @@ function controls.pressedButton(x, y)
 	    state.currentState = "secondRunState"
 	-- Ending Run
 	elseif state.currentState == "secondRunState" and controls.playerProgress >= maxProgress then
+		print("State 1")
 	    controls.playerTwoBestTime = timer.timeElapsed
 	    print("Player two best time: " .. controls.playerTwoBestTime .. " in " .. timer.timeElapsed .. " seconds." )
 	    state.currentState = "secondReadyState"
@@ -115,27 +117,26 @@ function controls.pressedButton(x, y)
 	    else 
 	    	print("Player 2 wins")
 	    end
-		print("State 6")
 		state.currentState = "endingState"
 	-- Running
 	elseif state.currentState == "secondRunState" and helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
+		print("State 1")
 		controls.lastButtonPressed = 1
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "secondRunState"
 		sound:stop()
 		sound:setPitch(0.7)
 		sound:play()
-		print("State 7")
 	elseif state.currentState == "secondRunState" and helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
+		print("State 1")
 		controls.lastButtonPressed = 2
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "secondRunState"
 		sound:stop()
 		sound:setPitch(0.5)
 		sound:play()
-		print("State 8")
 	end
 
 	
