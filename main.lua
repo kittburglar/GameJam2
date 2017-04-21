@@ -21,3 +21,9 @@ function love.draw()
 	controls.draw()
 	timer.draw()
 end
+
+function love.mousepressed(x, y, button)
+	if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+ 		controls.pressedButton(x, y)
+	end
+end

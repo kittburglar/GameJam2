@@ -1,6 +1,6 @@
 state = {}
 
-local states = {["firstReadyState"] = "firstReadyState", ["firstRunState"] = "firstRunState", ["secondReadyState"] = "secondReadyState", ["secondRunState"] = "secondRunState", ["endingState"] = "endingState"}
+local states = {["firstReadyState"] = "firstReadyState", ["firstRunState"] = "firstRunState", ["firstEndingState"] = "firstEndingState", ["secondReadyState"] = "secondReadyState", ["secondRunState"] = "secondRunState", ["endingState"] = "endingState"}
 
 function state.load()
 	state.currentState = states["firstReadyState"]
