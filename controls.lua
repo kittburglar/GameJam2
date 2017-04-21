@@ -1,4 +1,5 @@
 require "helper"
+require "state"
 
 controls = {}
 
@@ -22,7 +23,8 @@ function controls.load()
 	controls.buttonTwoColour = {0, 255, 0}
 	controls.lastButtonPressed = 0
 
-	controls.playerOneMaxProgress = 0
+	controls.playerOneBestTime = 0
+	controls.playerTwoBestTime = 0
 	controls.playerProgress = 0
 
 	controls.playerTurn = 1
@@ -31,27 +33,72 @@ end
 
 function controls.update()
 	if love.mouse.isDown(1) then
-		if controls.firstButtonPressed == true then
+
+
+		-- Begin run
+		if (helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
+			helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
+			state.currentState == "firstReadyState" then
 		    timer.start()
 		end
+
+		-- Running
 		if helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
 			print("Pressing button 1")
 			controls.lastButtonPressed = 1
 			controls.playerProgress = controls.playerProgress + 1
-			controls.firstButtonPressed = false
+			state.currentState = "firstRunState"
 		elseif helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
 			print("Pressing button 2")
 			controls.lastButtonPressed = 2
 			controls.playerProgress = controls.playerProgress + 1
-			controls.firstButtonPressed = false
+			state.currentState = "firstRunState"
 		end
 
-		
-
-		if controls.playerTurn == 1 and controls.playerProgress >= maxProgress then
-		    controls.playerOneMaxProgress = controls.playerProgress
-		    print("Number of steps: " .. controls.playerOneMaxProgress .. " in " .. timer.timeElapsed .. " seconds." )
+		-- Ending Run
+		if state.currentState == "firstRunState" and controls.playerProgress >= maxProgress then
+		    controls.playerOneBestTime = timer.timeElapsed
+		    print("Player one best time: " .. controls.playerOneBestTime .. " in " .. timer.timeElapsed .. " seconds." )
+		    state.currentState = "secondReadyState"
+		    timer.startTime = nil
+		    controls.playerProgress = 0
 		end
+
+		--Will refactor later lol (second player)
+
+		-- Begin run
+		if (helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
+			helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
+			state.currentState == "secondReadyState" then
+		    timer.start()
+		end
+
+		-- Running
+		if helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
+			print("Pressing button 1")
+			controls.lastButtonPressed = 1
+			controls.playerProgress = controls.playerProgress + 1
+			state.currentState = "secondRunState"
+		elseif helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
+			print("Pressing button 2")
+			controls.lastButtonPressed = 2
+			controls.playerProgress = controls.playerProgress + 1
+			state.currentState = "secondRunState"
+		end
+
+		-- Ending Run
+		if state.currentState == "secondRunState" and controls.playerProgress >= maxProgress then
+		    controls.playerTwoBestTime = controls.playerProgress
+		    print("Player two best time: " .. controls.playerTwoBestTime .. " in " .. timer.timeElapsed .. " seconds." )
+		    state.currentState = "secondReadyState"
+		    timer.startTime = nil
+		    if controls.playerOneBestTime < controls.playerTwoBestTime then
+		        print("Player 1 wins")
+		    else 
+		    	print("Player 2 wins")
+		    end
+		end
+
 	end
 end
 
