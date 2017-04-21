@@ -1,3 +1,5 @@
+require "helper"
+
 controls = {}
 
 function controls.load()
@@ -15,7 +17,13 @@ function controls.load()
 end
 
 function controls.update()
-
+	if love.mouse.isDown(1) then
+		if helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) then
+			print("Pressing button 1")
+		elseif helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) then
+			print("Pressing button 2")
+		end
+	end
 end
 
 function controls.draw()
