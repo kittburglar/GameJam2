@@ -5,7 +5,7 @@ controls = {}
 
 padding = 40
 buttonSize = 80
-maxProgress = 5
+maxProgress = 20
 
 function controls.load()
 	 
@@ -13,14 +13,14 @@ function controls.load()
 	controls.buttonOneHeight = buttonSize
 	controls.buttonOneX = padding
 	controls.buttonOneY = love.graphics.getHeight() - controls.buttonOneHeight - padding
-	controls.buttonOneColour = {255, 0, 0}
+	controls.buttonOneColour = {119,79,56}
 
 	
 	controls.buttonTwoWidth = buttonSize
 	controls.buttonTwoHeight = buttonSize
 	controls.buttonTwoX = love.graphics.getWidth() - padding - controls.buttonTwoWidth
 	controls.buttonTwoY = love.graphics.getHeight() - controls.buttonTwoHeight - padding
-	controls.buttonTwoColour = {0, 255, 0}
+	controls.buttonTwoColour = {119,79,56}
 	controls.lastButtonPressed = 0
 
 	controls.playerOneBestTime = 0
@@ -95,7 +95,7 @@ function controls.pressedButton(x, y)
 	    	print("Player 2 wins")
 	    end
 		print("State 6")
-		state.currentState = "firstRunState"
+		state.currentState = "firstReadyState"
 		controls.load()
 	-- Running
 	elseif helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
@@ -123,5 +123,13 @@ function controls.draw()
 	love.graphics.rectangle("fill", controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight)
 	love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
 	love.graphics.rectangle("fill", controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)
+end
+
+function love.keypressed(key, unicode)
+    if key == "left" then
+    	controls.pressedButton(controls.buttonOneX + 10, controls.buttonOneY + 10)
+    elseif key == "right" then
+    	controls.pressedButton(controls.buttonTwoX + 10, controls.buttonTwoY + 10)
+    end
 end
 
