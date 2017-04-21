@@ -31,6 +31,17 @@ function controls.load()
 	controls.firstButtonPressed = true
 end
 
+function controls.reset()
+	controls.lastButtonPressed = 0
+
+	controls.playerOneBestTime = 0
+	controls.playerTwoBestTime = 0
+	controls.playerProgress = 0
+
+	controls.playerTurn = 1
+	controls.firstButtonPressed = true
+end
+
 function controls.pressedButton(x, y)
 	
 	if (helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
@@ -84,7 +95,8 @@ function controls.pressedButton(x, y)
 	    	print("Player 2 wins")
 	    end
 		print("State 6")
-
+		state.currentState = "firstRunState"
+		controls.load()
 	-- Running
 	elseif helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
@@ -104,76 +116,6 @@ function controls.pressedButton(x, y)
 end
 
 function controls.update()
-	--[[
-	if love.mouse.isDown(1) then
-		-- Begin run
-		if (helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
-			helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
-			state.currentState == "firstReadyState" then
-		    timer.start()
-		    state.currentState = "firstRunState"
-		end
-
-		-- Running
-		if state.currentState == "firstRunState" and helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
-			print("Pressing button 1")
-			controls.lastButtonPressed = 1
-			controls.playerProgress = controls.playerProgress + 1
-			state.currentState = "firstRunState"
-		elseif state.currentState == "firstRunState" and helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
-			print("Pressing button 2")
-			controls.lastButtonPressed = 2
-			controls.playerProgress = controls.playerProgress + 1
-			state.currentState = "firstRunState"
-		end
-
-		-- Ending Run
-		if state.currentState == "firstRunState" and controls.playerProgress >= maxProgress then
-		    controls.playerOneBestTime = timer.timeElapsed
-		    print("Player one best time: " .. controls.playerOneBestTime .. " in " .. timer.timeElapsed .. " seconds." )
-		    timer.startTime = nil
-		    timer.timeElapsed = nil
-		    controls.playerProgress = 0
-		    state.currentState = "secondReadyState"
-		end
-
-		--Will refactor later lol (second player)
-
-		-- Begin run
-		if (helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
-			helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
-			state.currentState == "secondReadyState" then
-		    timer.start()
-		end
-
-		-- Running
-		if helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
-			print("Pressing button 1")
-			controls.lastButtonPressed = 1
-			controls.playerProgress = controls.playerProgress + 1
-			state.currentState = "secondRunState"
-		elseif helper.isPointInRect(love.mouse.getX(), love.mouse.getY(), controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and (controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
-			print("Pressing button 2")
-			controls.lastButtonPressed = 2
-			controls.playerProgress = controls.playerProgress + 1
-			state.currentState = "secondRunState"
-		end
-
-		-- Ending Run
-		if state.currentState == "secondRunState" and controls.playerProgress >= maxProgress then
-		    controls.playerTwoBestTime = controls.playerProgress
-		    print("Player two best time: " .. controls.playerTwoBestTime .. " in " .. timer.timeElapsed .. " seconds." )
-		    state.currentState = "secondReadyState"
-		    timer.startTime = nil
-		    if controls.playerOneBestTime < controls.playerTwoBestTime then
-		        print("Player 1 wins")
-		    else 
-		    	print("Player 2 wins")
-		    end
-		end
-		love.mouse.isDown(0)
-	end
-	]]--
 end
 
 function controls.draw()
