@@ -5,27 +5,29 @@ controls = {}
 
 padding = 40
 buttonSize = 80
-maxProgress = 20
+maxProgress = 100
+
+sound = love.audio.newSource("click.wav", "static")
 
 function controls.load()
-	 
 	controls.buttonOneWidth = buttonSize
 	controls.buttonOneHeight = buttonSize
 	controls.buttonOneX = padding
 	controls.buttonOneY = love.graphics.getHeight() - controls.buttonOneHeight - padding
-	controls.buttonOneColour = {119,79,56}
+	controls.buttonOneColour = {224,142,121}
 
 	controls.buttonTwoWidth = buttonSize
 	controls.buttonTwoHeight = buttonSize
 	controls.buttonTwoX = love.graphics.getWidth() - padding - controls.buttonTwoWidth
 	controls.buttonTwoY = love.graphics.getHeight() - controls.buttonTwoHeight - padding
-	controls.buttonTwoColour = {119,79,56}
+	controls.buttonTwoColour = {224,142,121}
 	controls.lastButtonPressed = 0
 
 	controls.startButtonWidth = buttonSize
 	controls.startButtonHeight = buttonSize
 	controls.startButtonX = love.graphics.getWidth()/2 - controls.startButtonWidth/2
 	controls.startButtonY = love.graphics.getHeight()/2 - controls.startButtonHeight/2
+	controls.startButtonColour = {224,142,121}
 
 	controls.playerOneBestTime = 0
 	controls.playerTwoBestTime = 0
@@ -79,12 +81,18 @@ function controls.pressedButton(x, y)
 		controls.lastButtonPressed = 1
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "firstRunState"
+		sound:stop()
+		sound:setPitch(0.7)
+		sound:play()
 		print("State 3")
 	elseif state.currentState == "firstRunState" and helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
 		controls.lastButtonPressed = 2
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "firstRunState"
+		sound:stop()
+		sound:setPitch(0.5)
+		sound:play()
 		print("State 4")
 	--Will refactor later lol (second player)
 
@@ -114,12 +122,18 @@ function controls.pressedButton(x, y)
 		controls.lastButtonPressed = 1
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "secondRunState"
+		sound:stop()
+		sound:setPitch(0.7)
+		sound:play()
 		print("State 7")
 	elseif state.currentState == "secondRunState" and helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
 		controls.lastButtonPressed = 2
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "secondRunState"
+		sound:stop()
+		sound:setPitch(0.5)
+		sound:play()
 		print("State 8")
 	end
 
@@ -130,13 +144,25 @@ function controls.update()
 end
 
 function controls.draw()
-	love.graphics.setColor(controls.buttonOneColour[1], controls.buttonOneColour[2], controls.buttonOneColour[3])
-	love.graphics.rectangle("fill", controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight)
-	love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
-	love.graphics.rectangle("fill", controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)
 	if state.currentState == "firstEndingState" or state.currentState == "endingState" then
-	    love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
+	    love.graphics.setColor(controls.startButtonColour[1], controls.startButtonColour[2], controls.startButtonColour[3])
 		love.graphics.rectangle("fill", controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)
+	else
+		
+		if controls.lastButtonPressed == 1 then
+		    love.graphics.setColor(241,212,175)
+		else
+			love.graphics.setColor(controls.buttonOneColour[1], controls.buttonOneColour[2], controls.buttonOneColour[3])
+		end
+		love.graphics.rectangle("fill", controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight)
+		if controls.lastButtonPressed == 2 then
+			love.graphics.setColor(241,212,175)
+		   
+		else 
+			love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
+		end
+		--love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
+		love.graphics.rectangle("fill", controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)
 	end
 end
 
