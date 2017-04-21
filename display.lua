@@ -34,5 +34,11 @@ function display.draw()
 	elseif state.currentState == "secondRunState" and controls.lastButtonPressed == 2 then
 	    love.graphics.draw(rightFootImage, love.graphics.getWidth()/2 - leftFootImage:getWidth()/2, love.graphics.getHeight()/2 - leftFootImage:getHeight()/2)
 	    love.graphics.printf(string.format("%s", string.format("Left", timer.timeElapsed)), 0, love.graphics.getHeight()/4, w, "center")
+	elseif state.currentState == "endingState" then
+		if controls.playerOneBestTime < controls.playerTwoBestTime then
+			love.graphics.printf("Player 1 Wins", 0, love.graphics.getHeight()/4, w, "center")
+		else
+			love.graphics.printf("Player 2 Wins", 0, love.graphics.getHeight()/4, w, "center")
+		end
 	end
 end

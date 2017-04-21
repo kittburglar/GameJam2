@@ -15,13 +15,17 @@ function controls.load()
 	controls.buttonOneY = love.graphics.getHeight() - controls.buttonOneHeight - padding
 	controls.buttonOneColour = {119,79,56}
 
-	
 	controls.buttonTwoWidth = buttonSize
 	controls.buttonTwoHeight = buttonSize
 	controls.buttonTwoX = love.graphics.getWidth() - padding - controls.buttonTwoWidth
 	controls.buttonTwoY = love.graphics.getHeight() - controls.buttonTwoHeight - padding
 	controls.buttonTwoColour = {119,79,56}
 	controls.lastButtonPressed = 0
+
+	controls.startButtonWidth = buttonSize
+	controls.startButtonHeight = buttonSize
+	controls.startButtonX = love.graphics.getWidth()/2 - controls.startButtonWidth/2
+	controls.startButtonY = love.graphics.getHeight()/2 - controls.startButtonHeight/2
 
 	controls.playerOneBestTime = 0
 	controls.playerTwoBestTime = 0
@@ -43,8 +47,16 @@ function controls.reset()
 end
 
 function controls.pressedButton(x, y)
+	if state.currentState == "endingState" and 
+	(helper.isPointInRect(x, y, controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)) then
 	
-	if (helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
+		state.currentState = "firstReadyState"
+		controls.load()
+	elseif state.currentState == "firstEndingState" and
+		(helper.isPointInRect(x, y, controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)) then
+		state.currentState = "secondReadyState"
+		controls.playerProgress = 0
+	elseif (helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
 		helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
 		state.currentState == "firstReadyState" then
 		print("State 1")
@@ -58,8 +70,8 @@ function controls.pressedButton(x, y)
 	    print("Player one best time: " .. controls.playerOneBestTime .. " in " .. timer.timeElapsed .. " seconds." )
 	    timer.startTime = nil
 	    timer.timeElapsed = nil
-	    controls.playerProgress = 0
-	    state.currentState = "secondReadyState"
+	    
+	    state.currentState = "firstEndingState"
 
 	-- Running
 	elseif state.currentState == "firstRunState" and helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
@@ -85,7 +97,7 @@ function controls.pressedButton(x, y)
 	    state.currentState = "secondRunState"
 	-- Ending Run
 	elseif state.currentState == "secondRunState" and controls.playerProgress >= maxProgress then
-	    controls.playerTwoBestTime = controls.playerProgress
+	    controls.playerTwoBestTime = timer.timeElapsed
 	    print("Player two best time: " .. controls.playerTwoBestTime .. " in " .. timer.timeElapsed .. " seconds." )
 	    state.currentState = "secondReadyState"
 	    timer.startTime = nil
@@ -95,16 +107,15 @@ function controls.pressedButton(x, y)
 	    	print("Player 2 wins")
 	    end
 		print("State 6")
-		state.currentState = "firstReadyState"
-		controls.load()
+		state.currentState = "endingState"
 	-- Running
-	elseif helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
+	elseif state.currentState == "secondRunState" and helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 2) then
 		controls.lastButtonPressed = 1
 		controls.playerProgress = controls.playerProgress + 1
 		state.currentState = "secondRunState"
 		print("State 7")
-	elseif helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
+	elseif state.currentState == "secondRunState" and helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight) and 
 		(controls.lastButtonPressed == 0 or controls.lastButtonPressed == 1) then
 		controls.lastButtonPressed = 2
 		controls.playerProgress = controls.playerProgress + 1
@@ -123,6 +134,10 @@ function controls.draw()
 	love.graphics.rectangle("fill", controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight)
 	love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
 	love.graphics.rectangle("fill", controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)
+	if state.currentState == "firstEndingState" or state.currentState == "endingState" then
+	    love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
+		love.graphics.rectangle("fill", controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)
+	end
 end
 
 function love.keypressed(key, unicode)
