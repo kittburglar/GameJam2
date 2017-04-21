@@ -32,7 +32,7 @@ function controls.load()
 	controls.playerOneBestTime = 0
 	controls.playerTwoBestTime = 0
 	controls.playerProgress = 0
-
+	controls.lastButtonPressed = 0 
 	controls.playerTurn = 1
 	controls.firstButtonPressed = true
 end
@@ -58,6 +58,7 @@ function controls.pressedButton(x, y)
 		(helper.isPointInRect(x, y, controls.startButtonX, controls.startButtonY, controls.startButtonWidth, controls.startButtonHeight)) then
 		state.currentState = "secondReadyState"
 		controls.playerProgress = 0
+		controls.lastButtonPressed = 0 
 	elseif (helper.isPointInRect(x, y, controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight) or 
 		helper.isPointInRect(x, y, controls.buttonTwoX, controls.buttonTwoY, controls.buttonTwoWidth, controls.buttonTwoHeight)) and 
 		state.currentState == "firstReadyState" then
@@ -157,7 +158,6 @@ function controls.draw()
 		love.graphics.rectangle("fill", controls.buttonOneX, controls.buttonOneY, controls.buttonOneWidth, controls.buttonOneHeight)
 		if controls.lastButtonPressed == 2 then
 			love.graphics.setColor(241,212,175)
-		   
 		else 
 			love.graphics.setColor(controls.buttonTwoColour[1], controls.buttonTwoColour[2], controls.buttonTwoColour[3])
 		end
